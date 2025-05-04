@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +16,30 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('fake-auth')->group(function () {
-    Route::get('/orders', [OrderController::class, 'store']);
+Route::middleware(['fake-auth', ])->group(function () {
+
+    Route::prefix('orders')->group(function () {
+        
+        Route::post('store', [OrderController::class, 'store']);
+        Route::get('/{id}', [OrderController::class, 'get']);
+        Route::get('/', [OrderController::class, 'list']);
+        Route::post('/{id}/cancel', [OrderController::class, 'cancel']); 
+
+    });
+
+    Route::prefix('transactions')->group(function () {
+        
+        Route::get('/{id}', [TransactionController::class, 'get']);
+        Route::get('/', [TransactionController::class, 'list']);
+
+    });
+
+    Route::prefix('user/wallet')->group(function () {
+        
+        Route::get('', [UserController::class, 'getWalletBalance']);
+        Route::post('/withdraw', [UserController::class, 'withdrawFromWallet']);
+        Route::post('/deposit', [UserController::class, 'depositToWallet']);
+
+    });
+    
 });
