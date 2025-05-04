@@ -6,5 +6,13 @@ use Illuminate\Http\Request;
 
 class TransactionController extends Controller
 {
-    //
+    public function get() 
+    {
+        
+    }
+
+    public function list() 
+    {
+        
+    }
 }
