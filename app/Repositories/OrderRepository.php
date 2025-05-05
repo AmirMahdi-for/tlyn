@@ -25,4 +25,26 @@ class OrderRepository implements OrderRepositoryInterface
             ->where('price_per_gram', $order->price_per_gram)
             ->get();
     }
+
+    public function get(int $id)
+    {
+        return Order::find($id);
+    }
+
+    public function list(array $filters = [])
+    {
+        $query = Order::query(); // ساخت یک query پایه برای سفارش‌ها
+
+        // اعمال فیلترها به query
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        if (!empty($filters['user_id'])) {
+            $query->where('user_id', $filters['user_id']);
+        }
+
+        return $query->get(); // گرفتن نتایج
+    }
+
 }

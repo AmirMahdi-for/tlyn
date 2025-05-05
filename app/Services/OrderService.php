@@ -42,4 +42,28 @@ class OrderService
             }
         }
     }
+
+    public function getById($id)
+    {
+        return $this->orderRepository->find($id);
+    }
+
+    public function getAll()
+    {
+        return $this->orderRepository->getAll();
+    }
+
+    public function cancelOrder($id)
+    {
+        $order = $this->orderRepository->find($id);
+
+        if (!$order) {
+            throw new \Exception('Order not found');
+        }
+
+        $order->status = 'cancelled';
+        $order->save();
+    }
+
+
 }
