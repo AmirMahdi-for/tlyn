@@ -37,7 +37,7 @@ class OrderController extends Controller
     {
         $orders = $this->orderService->getAll($request->user()->id);
 
-        return response()->json(['data' => new OrderResources($orders)], 200);
+        return response()->json(new OrderResources($orders), 200);
     }
 
     public function cancel($locale, $id, Request $request) 

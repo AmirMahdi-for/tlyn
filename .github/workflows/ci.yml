@@ -27,6 +27,7 @@ jobs:
           path: ~/.composer/cache
           key: composer-${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
           restore-keys: composer-${{ runner.os }}-
+          
       - name: Install Dependencies 📚
         run: composer install --prefer-dist --no-progress --no-suggest --dev
 

@@ -31,14 +31,14 @@ class OrderRepository implements OrderRepositoryInterface
         return Order::where('user_id', $userId)->find($id);
     }
 
-    public function getAll($filters = [], $userId)
+    public function getAll($filters, $userId)
     {
-        $query = Order::where('user_id', $userId)->query();
+        $query = Order::where('user_id', $userId);
 
         if (!empty($filters['status'])) {
             $query->where('status', $filters['status']);
         }
 
-        return $query->paginated(10);
+        return $query->paginate(10);
     }
 }
