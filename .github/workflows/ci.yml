@@ -40,6 +40,7 @@ jobs:
       - name: Setup .env.testing ⚙️
         run: |
           cp .env.example .env.testing
+          cp .env.example .env
           echo "DB_CONNECTION=mysql" >> .env.testing
           echo "DB_HOST=mysql" >> .env.testing 
           echo "DB_PORT=3306" >> .env.testing
@@ -68,7 +69,6 @@ jobs:
 
       - name: Wait for MySQL to be ready 🕓
         run: sleep 10
-
 
       - name: Run Migrations 🐂
         run: php artisan migrate --env=testing --force
