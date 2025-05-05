@@ -10,6 +10,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: test_db
+          MYSQL_USER: user
+          MYSQL_PASSWORD: password
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
       - name: Checkout Repository 🏢
         uses: actions/checkout@v4
@@ -20,6 +36,16 @@ jobs:
           php-version: "8.4"
           extensions: mbstring, pdo, pdo_mysql
           tools: composer:v2, phpunit, phpstan
+      
+      - name: Setup .env.testing ⚙️
+        run: |
+          cp .env.example .env.testing
+          echo "DB_CONNECTION=mysql" >> .env.testing
+          echo "DB_HOST=mysql" >> .env.testing 
+          echo "DB_PORT=3306" >> .env.testing
+          echo "DB_DATABASE=test_db" >> .env.testing
+          echo "DB_USERNAME=user" >> .env.testing
+          echo "DB_PASSWORD=password" >> .env.testing
 
       - name: Cache Composer Dependencies 🛠️
         uses: actions/cache@v3
@@ -27,7 +53,7 @@ jobs:
           path: ~/.composer/cache
           key: composer-${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
           restore-keys: composer-${{ runner.os }}-
-          
+
       - name: Install Dependencies 📚
         run: composer install --prefer-dist --no-progress --no-suggest --dev
 
@@ -36,6 +62,13 @@ jobs:
 
       - name: Optimize Laravel 🛠️
         run: php artisan config:cache && php artisan optimize
+
+      - name: Generate App Key 🔑
+        run: php artisan key:generate --env=testing
+
+      - name: Wait for MySQL to be ready 🕓
+        run: sleep 10
+
 
       - name: Run Migrations 🐂
         run: php artisan migrate --env=testing --force
