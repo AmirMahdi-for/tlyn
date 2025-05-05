@@ -24,10 +24,8 @@ class TradeService
 
     public function create(Order $buyOrder, Order $sellOrder)
     {
-        // ایجاد Trade
         $trade = $this->tradeRepository->create($buyOrder, $sellOrder);
 
-        // انتقال موجودی بین کیف‌پول‌ها
         $this->walletRepository->transferGoldToToman(
             $sellOrder->user_id,
             $buyOrder->user_id,
@@ -35,21 +33,26 @@ class TradeService
             $buyOrder->price_per_gram
         );
 
-        // ثبت تراکنش برای خریدار
+        $buyWallet = $this->walletRepository->getByUserId($buyOrder->user_id);
+        $buyBalanceAfter = $buyWallet->balance_toman - ($sellOrder->amount * $buyOrder->price_per_gram);
+
         $this->transactionRepository->create([
             'user_id' => $buyOrder->user_id,
             'type' => 'purchase',
             'asset' => 'gold',
             'amount' => $sellOrder->amount,
-            // می‌تونی مقدار balance_after رو هم در آینده اضافه کنی
+            'balance_after' => $buyBalanceAfter,
         ]);
 
-        // ثبت تراکنش برای فروشنده
+        $sellWallet = $this->walletRepository->getByUserId($sellOrder->user_id);
+        $sellBalanceAfter = $sellWallet->balance_gold + $sellOrder->amount;
+
         $this->transactionRepository->create([
             'user_id' => $sellOrder->user_id,
             'type' => 'sell',
             'asset' => 'gold',
             'amount' => $sellOrder->amount,
+            'balance_after' => $sellBalanceAfter, 
         ]);
 
         return $trade;

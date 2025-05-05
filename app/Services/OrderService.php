@@ -23,7 +23,17 @@ class OrderService
 
     public function store($data, $userId)
     {
-        $this->walletService->hasSufficientBalance($data['type'], $data['amount'], $data['price_per_gram'], $userId);
+        $hasSufficientBalance = $this->walletService->hasSufficientBalance(
+            $data['type'],
+            $data['amount'],
+            $data['price_per_gram'],
+            $userId
+        );
+
+        if (!$hasSufficientBalance) {
+            throw new \Exception('Insufficient balance');
+        }
+        
 
         $order = $this->orderRepository->create($data, $userId);
 
@@ -31,6 +41,7 @@ class OrderService
 
         return $order;
     }
+
 
     public function match(Order $order)
     {

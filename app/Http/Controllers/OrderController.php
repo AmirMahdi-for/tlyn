@@ -19,11 +19,14 @@ class OrderController extends Controller
         $this->orderService = $orderService;
     }
     
-    public function store(StoreOrderRequest $request) 
+    public function store(StoreOrderRequest $request)
     {
-        $order = $this->orderService->store($request->validated(), $request->user()->id);
-
-        return response()->json(['order' => $order], 201);
+        try {
+            $order = $this->orderService->store($request->validated(), $request->user()->id);
+            return response()->json(['data' => new OrderResource($order)], 201);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 422);
+        }
     }
 
     public function get($locale, $id, Request $request) 

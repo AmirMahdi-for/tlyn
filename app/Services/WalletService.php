@@ -20,11 +20,11 @@ class WalletService
         if ($type === 'buy') {
             $totalPrice = $amount * $pricePerGram;
             if ($wallet->balance_toman < $totalPrice) {
-                throw new \Exception('Insufficient balance');
+                throw new InsufficientBalanceException('موجودی کافی نیست');
             }
         } else {
             if ($wallet->balance_gold < $amount) {
-                throw new \Exception('Insufficient gold balance');
+                throw new InsufficientBalanceException('موجودی کافی نیست');
             }
         }
 
