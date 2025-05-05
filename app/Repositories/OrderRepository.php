@@ -26,25 +26,19 @@ class OrderRepository implements OrderRepositoryInterface
             ->get();
     }
 
-    public function get(int $id, int $userId)
+    public function get($id, $userId)
     {
         return Order::where('user_id', $userId)->find($id);
     }
 
-    public function list(array $filters = [])
+    public function getAll($filters = [], $userId)
     {
-        $query = Order::query(); // ساخت یک query پایه برای سفارش‌ها
+        $query = Order::where('user_id', $userId)->query();
 
-        // اعمال فیلترها به query
         if (!empty($filters['status'])) {
             $query->where('status', $filters['status']);
         }
 
-        if (!empty($filters['user_id'])) {
-            $query->where('user_id', $filters['user_id']);
-        }
-
-        return $query->get(); // گرفتن نتایج
+        return $query->paginated(10);
     }
-
 }

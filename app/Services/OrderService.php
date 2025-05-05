@@ -50,10 +50,11 @@ class OrderService
 
     public function getAll($userId)
     {
-        return $this->orderRepository->getAll($userId);
+        $filters = [];
+        return $this->orderRepository->getAll($filters, $userId);
     }
 
-    public function cancelOrder($id)
+    public function cancelOrder($id, $userId)
     {
         $order = $this->orderRepository->get($id, $userId);
 

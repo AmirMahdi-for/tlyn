@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Resources\OrderResource;
+use App\Http\Resources\Paginated\OrderResource as PaginatedOrderResource;
+use App\Http\Resources\Paginated\OrderResources;
 use App\Models\Order;
 use App\Services\OrderService;
 use Illuminate\Http\Request;
@@ -31,16 +33,16 @@ class OrderController extends Controller
         return response()->json(['data' => new OrderResource($order)]);
     }
 
-    public function list() 
+    public function list(Request $request) 
     {
-        $orders = $this->orderService->getAll();
+        $orders = $this->orderService->getAll($request->user()->id);
 
-        return response()->json(['orders' => $orders], 200);
+        return response()->json(['data' => new OrderResources($orders)], 200);
     }
 
-    public function cancel($id) 
+    public function cancel($locale, $id, Request $request) 
     {
-        $order = $this->orderService->getById($id);
+        $order = $this->orderService->getById($id, $request->user()->id);
 
         if (!$order) {
             return response()->json(['error' => 'Order not found'], 404);

@@ -9,5 +9,5 @@ interface OrderRepositoryInterface
     public function create(array $data, int $userId);
     public function getOpenOrders(Order $order);
     public function get(int $id, int $userId);
-    public function list(array $filters = []);
+    public function getAll(array $filters = [], $userId);
 }
