@@ -60,11 +60,11 @@ jobs:
       - name: Dump Autoload 🛠️
         run: composer dump-autoload
 
-      - name: Optimize Laravel 🛠️
-        run: php artisan config:cache && php artisan optimize
-
       - name: Generate App Key 🔑
         run: php artisan key:generate --env=testing
+
+      - name: Optimize Laravel 🛠️
+        run: php artisan config:cache && php artisan optimize
 
       - name: Wait for MySQL to be ready 🕓
         run: sleep 10
