@@ -1,0 +1,55 @@
+name: CI for Laravel 11 and TLYN
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository 🏢
+        uses: actions/checkout@v4
+
+      - name: Setup PHP 🐘
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          extensions: mbstring, pdo, pdo_mysql
+          tools: composer:v2, phpunit, phpstan
+
+      - name: Cache Composer Dependencies 🛠️
+        uses: actions/cache@v3
+        with:
+          path: ~/.composer/cache
+          key: composer-${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: composer-${{ runner.os }}-
+
+      - name: Install Dependencies 📚
+        run: cd laravel-app && composer install --prefer-dist --no-progress --no-suggest --dev
+
+      - name: Dump Autoload 🛠️
+        run: cd laravel-app && composer dump-autoload
+      
+      - name: Setup .env.testing 🧪
+        run: |
+          cp laravel-app/.env.example laravel-app/.env.testing
+          echo "DB_CONNECTION=mysql" >> laravel-app/.env.testing
+          echo "DB_DATABASE=testing_db" >> laravel-app/.env.testing
+          echo "DB_USERNAME=root" >> laravel-app/.env.testing
+          echo "DB_PASSWORD=" >> laravel-app/.env.testing
+
+      - name: Optimize Laravel 🛠️
+        run: cd laravel-app && php artisan config:cache && php artisan optimize
+
+      - name: Run Migrations 🐂
+        run: cd laravel-app && php artisan migrate --env=testing --force
+
+      - name: Run Feature Tests ✅
+        run: cd laravel-app && php artisan test --env=testing --testsuite=Feature
+
+      - name: Run Static Analysis 🔍
+        run: cd laravel-app && phpstan analyse app/ --level=2
