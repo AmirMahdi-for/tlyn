@@ -52,7 +52,7 @@ class OrderController extends Controller
             return response()->json(['error' => 'Completed orders cannot be cancelled'], 400);
         }
 
-        $this->orderService->cancelOrder($id);
+        $this->orderService->cancelOrder($id, $request->user()->id);
 
         return response()->json(['message' => 'Order cancelled successfully'], 200);
     }
