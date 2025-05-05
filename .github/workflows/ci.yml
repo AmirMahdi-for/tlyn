@@ -28,9 +28,6 @@ jobs:
           key: composer-${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
           restore-keys: composer-${{ runner.os }}-
 
-      - name: Install Dependencies 📚
-        run: cd laravel-app && composer install --prefer-dist --no-progress --no-suggest --dev
-
       - name: Dump Autoload 🛠️
         run: cd laravel-app && composer dump-autoload
       
