@@ -1,4 +1,4 @@
-name: CI for Laravel 11 and TLYN
+name: TLYN CI
 
 on:
   push:
