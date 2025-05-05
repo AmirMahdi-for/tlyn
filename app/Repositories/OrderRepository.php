@@ -26,9 +26,9 @@ class OrderRepository implements OrderRepositoryInterface
             ->get();
     }
 
-    public function get(int $id)
+    public function get(int $id, int $userId)
     {
-        return Order::find($id);
+        return Order::where('user_id', $userId)->find($id);
     }
 
     public function list(array $filters = [])

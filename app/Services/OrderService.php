@@ -43,19 +43,19 @@ class OrderService
         }
     }
 
-    public function getById($id)
+    public function getById($id, $userId)
     {
-        return $this->orderRepository->find($id);
+        return $this->orderRepository->get($id, $userId);
     }
 
-    public function getAll()
+    public function getAll($userId)
     {
-        return $this->orderRepository->getAll();
+        return $this->orderRepository->getAll($userId);
     }
 
     public function cancelOrder($id)
     {
-        $order = $this->orderRepository->find($id);
+        $order = $this->orderRepository->get($id, $userId);
 
         if (!$order) {
             throw new \Exception('Order not found');

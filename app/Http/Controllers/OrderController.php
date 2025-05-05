@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreOrderRequest;
+use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use App\Services\OrderService;
 use Illuminate\Http\Request;
@@ -23,9 +24,11 @@ class OrderController extends Controller
         return response()->json(['order' => $order], 201);
     }
 
-    public function get(Order $order) 
+    public function get($locale, $id, Request $request) 
     {
-        return response()->json(['order' => $order]);
+        $order = $this->orderService->getById($id, $request->user()->id);
+
+        return response()->json(['data' => new OrderResource($order)]);
     }
 
     public function list() 
