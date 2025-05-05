@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\InsufficientBalanceException;
 use App\Repositories\WalletRepository;
 
 class WalletService
@@ -20,11 +21,11 @@ class WalletService
         if ($type === 'buy') {
             $totalPrice = $amount * $pricePerGram;
             if ($wallet->balance_toman < $totalPrice) {
-                throw new InsufficientBalanceException('موجودی کافی نیست');
+                throw new InsufficientBalanceException('Insufficient balance');
             }
         } else {
             if ($wallet->balance_gold < $amount) {
-                throw new InsufficientBalanceException('موجودی کافی نیست');
+                throw new InsufficientBalanceException('Insufficient balance');
             }
         }
 

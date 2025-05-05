@@ -12,82 +12,97 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 class StoreOrderTest extends TestCase
 {
     use RefreshDatabase;
-
     public function test_user_can_store_buy_order_when_sufficient_balance()
     {
-        $this->actingAsUserWithSufficientBalance(function ($user) {
-            $payload = $this->getOrderPayload('buy');
+        $user = $this->createUserWithSufficientBalance(5, 200_000);
+        $payload = $this->validBuyPayload(5, 200_000);
 
-            $response = $this->postJson('fa/api/orders/store', $payload, [
-                'X-User-ID' => $user->id,
-            ]);
+        $response = $this->postBuyOrder($payload, $user);
 
-            $response->assertStatus(201); 
+        $response->assertStatus(201); 
 
-            $this->assertDatabaseHas('orders', [
-                'user_id' => $user->id,
-                'type' => 'buy',
-                'amount' => $payload['amount'],
-                'price_per_gram' => $payload['price_per_gram'],
-            ]);
-        });
+        $this->assertOrderStored($user, $payload);
     }
-
 
     public function test_user_cannot_store_buy_order_with_insufficient_balance()
     {
-        $this->actingAsUserWithInsufficientBalance(function ($user) {
-            $payload = $this->getOrderPayload('buy');
+        $user = $this->createUserWithInsufficientBalance(5, 200_000);
+        $payload = $this->invalidBuyPayload(5, 200_000);
 
-            $response = $this->postJson('fa/api/orders/store', $payload, [
-                'X-User-ID' => $user->id,
-            ]);
+        $response = $this->postBuyOrder($payload, $user);
 
-            $response->assertStatus(500);
-            $this->assertDatabaseMissing('orders', [
-                'user_id' => $user->id,
-            ]);
-        });
+        $response->assertStatus(422);
+
+        $this->assertOrderNotStored($user);
     }
 
-    private function actingAsUserWithSufficientBalance($callback)
+    private function createUserWithSufficientBalance($amount, $pricePerGram)
     {
-        $faker = Faker::create();
         $user = User::factory()->create();
+        $totalPrice = $amount * $pricePerGram;
 
         Wallet::factory()->create([
             'user_id' => $user->id,
-            'balance_toman' => 1_000_000,
-            'balance_gold' => 10,
+            'balance_toman' => $totalPrice + 1,
+            'balance_gold' => $amount,
         ]);
 
-        $callback($user);
+        return $user;
     }
 
-    private function actingAsUserWithInsufficientBalance($callback)
+    private function createUserWithInsufficientBalance($amount, $pricePerGram)
     {
-        $faker = Faker::create();
         $user = User::factory()->create();
+        $totalPrice = $amount * $pricePerGram;
 
         Wallet::factory()->create([
             'user_id' => $user->id,
-            'balance_toman' => 100_000,
+            'balance_toman' => $totalPrice - 1,
             'balance_gold' => 0,
         ]);
 
-        $callback($user);
+        return $user;
     }
 
-    private function getOrderPayload($type)
+    private function validBuyPayload($amount, $pricePerGram)
     {
-        $faker = Faker::create();
-        $amount = $faker->randomFloat(2, 1, 10);
-        $pricePerGram = $faker->numberBetween(50_000, 200_000);
-
         return [
-            'type' => $type,
+            'type' => 'buy',
             'amount' => $amount,
             'price_per_gram' => $pricePerGram,
         ];
+    }
+
+    private function invalidBuyPayload($amount, $pricePerGram)
+    {
+        return [
+            'type' => 'buy',
+            'amount' => $amount,
+            'price_per_gram' => $pricePerGram,
+        ];
+    }
+
+    private function postBuyOrder($payload, $user)
+    {
+        return $this->postJson('fa/api/orders/store', $payload, [
+            'X-User-ID' => $user->id,
+        ]);
+    }
+
+    private function assertOrderStored($user, $payload)
+    {
+        $this->assertDatabaseHas('orders', [
+            'user_id' => $user->id,
+            'type' => 'buy',
+            'amount' => $payload['amount'],
+            'price_per_gram' => $payload['price_per_gram'],
+        ]);
+    }
+
+    private function assertOrderNotStored($user)
+    {
+        $this->assertDatabaseMissing('orders', [
+            'user_id' => $user->id,
+        ]);
     }
 }
