@@ -17,7 +17,7 @@ class OrderResource extends JsonResource
         return [
             "id"               => $this->id,
             "user"             => new UserResource($this->user),
-            "type"             => $this->title,
+            "type"             => $this->type,
             "price_per_gram"   => $this->price_per_gram,
             "amount"           => $this->amount,
             "remaining_amount" => $this->remaining_amount,
