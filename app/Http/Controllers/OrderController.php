@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreOrderRequest;
+use App\Models\Order;
 use App\Services\OrderService;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
     protected OrderService $orderService;
-    
+
     public function __construct(OrderService $orderService)
     {
         $this->orderService = $orderService;
@@ -22,18 +23,33 @@ class OrderController extends Controller
         return response()->json(['order' => $order], 201);
     }
 
-    public function get() 
+    public function get(Order $order) 
     {
-        
+        return response()->json(['order' => $order]);
     }
 
     public function list() 
     {
-        
+        $orders = $this->orderService->getAll();
+
+        return response()->json(['orders' => $orders], 200);
     }
 
-    public function cancel() 
+    public function cancel($id) 
     {
-        
+        $order = $this->orderService->getById($id);
+
+        if (!$order) {
+            return response()->json(['error' => 'Order not found'], 404);
+        }
+
+        if ($order->status === 'completed') {
+            return response()->json(['error' => 'Completed orders cannot be cancelled'], 400);
+        }
+
+        $this->orderService->cancelOrder($id);
+
+        return response()->json(['message' => 'Order cancelled successfully'], 200);
     }
+
 }
