@@ -13,5 +13,6 @@ class Kernel extends BaseKernel
      */
     protected $routeMiddleware = [
         'fake-auth' => \App\Http\Middleware\FakeAuthMiddleware::class,
+        'request-docs' => \Rakutentech\LaravelRequestDocs\LaravelRequestDocsMiddleware::class,
     ];
 }
