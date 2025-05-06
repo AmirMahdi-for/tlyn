@@ -12,4 +12,19 @@ class TransactionRepository implements TransactionRepositoryInterface
     {
         return Transaction::create($data);
     }
+
+    public function get(int $id, int $userId)
+    {
+        return Transaction::where('user_id', $userId)->find($id);
+    }
+    public function getAll(array $filters, $userId)
+    {
+        $query = Transaction::where('user_id', $userId);
+
+        if (!empty($filters['type'])) {
+            $query->where('type', $filters['type']);
+        }
+
+        return $query->paginate(10);
+    }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources\Paginated;
 
-use App\Http\Resources\TradeResource;
+use App\Http\Resources\TransactionResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 

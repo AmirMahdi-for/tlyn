@@ -17,10 +17,13 @@ class TransactionResource extends JsonResource
         return [
             "id"            => $this->id,
             "user"          => new UserResource($this->user),
-            "balance_toman" => $this->balance_toman,
-            "balance_gold"  => $this->balance_gold,
-            "update_at"     => $this->update_at,
+            "type"          => $this->type,
+            "asset"         => $this->asset,
+            "amount"        => $this->amount,
+            "balance_after" => $this->balance_after,
+            "description"   => $this->description,
             "created_at"    => $this->created_at,
+
         ];
     }
 }
