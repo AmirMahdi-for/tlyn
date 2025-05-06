@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Exceptions\InsufficientBalanceException;
 use App\Repositories\WalletRepository;
+use Illuminate\Support\Facades\DB;
 
 class WalletService
 {
@@ -30,5 +31,38 @@ class WalletService
         }
 
         return true;
+    }
+
+    public function updateWallet($data, $userId) 
+    {
+        $wallet = $this->walletRepository->getByUserId($userId);
+
+        if ($data['type'] == 'withdraw') {
+            if ($wallet->balance_toman < $data['amount']) {
+                throw new \Exception('موجودی کافی برای برداشت وجود ندارد');
+            }
+    
+            $wallet->updateOrCreate(
+                ['user_id' => $userId],
+                [
+                    'balance_toman' => DB::raw("balance_toman - {$data['amount']}") 
+                ]
+            );
+        }
+    
+        if ($data['type'] == 'deposit') {
+            $wallet->updateOrCreate(
+                ['user_id' => $userId], 
+                [
+                    'balance_toman' => DB::raw("balance_toman + {$data['amount']}")
+                ]
+            );
+        }
+    }
+
+    public function getWallet($userId) 
+    {
+        $wallet = $this->walletRepository->getByUserId($userId);
+        return $wallet;
     }
 }

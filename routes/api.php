@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\WalletController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -36,9 +36,8 @@ Route::middleware(['fake-auth', ])->group(function () {
 
     Route::prefix('user/wallet')->group(function () {
         
-        Route::get('', [UserController::class, 'getWalletBalance']);
-        Route::post('/withdraw', [UserController::class, 'withdrawFromWallet']);
-        Route::post('/deposit', [UserController::class, 'depositToWallet']);
+        Route::get('', [WalletController::class, 'getWalletBalance']);
+        Route::put('/update', [WalletController::class, 'updateWallet']);
 
     });
     
