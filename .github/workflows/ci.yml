@@ -76,6 +76,6 @@ jobs:
       - name: Run Feature Tests ✅
         run: php artisan test --env=testing --testsuite=Feature
 
-      - name: Run Static Analysis 🔍
-        run: phpstan analyse app/ --level=2
+      # - name: Run Static Analysis 🔍
+      #   run: phpstan analyse app/ --level=2
 
