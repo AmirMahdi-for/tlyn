@@ -16,24 +16,6 @@ class WalletRepository implements WalletRepositoryInterface
         return Wallet::where('user_id', $userId)->first();
     }
 
-    public function updateBalanceToman(int $userId, int $amount): Wallet
-    {
-        $wallet = $this->getByUserId($userId);
-        $wallet->balance_toman += $amount;
-        $wallet->save();
-
-        return $wallet;
-    }
-
-    public function updateBalanceGold(int $userId, float $amount): Wallet
-    {
-        $wallet = $this->getByUserId($userId);
-        $wallet->balance_gold += $amount;
-        $wallet->save();
-
-        return $wallet;
-    }
-
     public function setBalances(int $userId, int $toman, float $gold): Wallet
     {
         $wallet = $this->getByUserId($userId);
@@ -58,6 +40,7 @@ class WalletRepository implements WalletRepositoryInterface
 
     public function transferGoldToToman(int $sellerId, int $buyerId, float $amount, int $pricePerGram): void
     {
+        var_dump('hi hi hi ');
         $totalPrice = $amount * $pricePerGram;
 
         // Buyer:
@@ -67,5 +50,25 @@ class WalletRepository implements WalletRepositoryInterface
         // Seller:
         $this->updateBalanceGold($sellerId, -$amount);       // Gold -
         $this->updateBalanceToman($sellerId, $totalPrice);   // Toman +
+    }
+
+    public function updateBalanceGold(int $userId, float $amount): Wallet
+    {
+        var_dump('gold');
+        $wallet = $this->getByUserId($userId);
+        $wallet->balance_gold += $amount;
+        $wallet->save();
+
+        return $wallet;
+    }
+
+    public function updateBalanceToman(int $userId, float $amount): Wallet
+    {
+        var_dump('toman');
+        $wallet = $this->getByUserId($userId);
+        $wallet->balance_toman += $amount;
+        $wallet->save();
+
+        return $wallet;
     }
 }

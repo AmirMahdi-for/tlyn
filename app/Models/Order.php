@@ -9,10 +9,15 @@ class Order extends Model
 {
     use HasFactory;
 
+    const STATUS_OPEN = 'open';
+    const STATUS_CANCELED = 'cancelled';
+    const STATUS_COMPLETED = 'completed';
+
     protected $fillable = [
         'user_id',
         'type',
         'price_per_gram',
+        'filled_amount',
         'amount',
         'remaining_amount',
         'status',

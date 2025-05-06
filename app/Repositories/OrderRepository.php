@@ -21,9 +21,9 @@ class OrderRepository implements OrderRepositoryInterface
     public function getOpenOrders(Order $order)
     {
         return Order::where('status', 'open')
-            ->where('type', $order->type === 'buy' ? 'sell' : 'buy')
-            ->where('price_per_gram', $order->price_per_gram)
-            ->get();
+        ->where('type', $order->type === 'buy' ? 'sell' : 'buy')
+        ->whereRaw('ABS(price_per_gram - ?) < 0.0001', [$order->price_per_gram])
+        ->get();
     }
 
     public function get($id, $userId)

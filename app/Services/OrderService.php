@@ -72,7 +72,7 @@ class OrderService
             throw new \Exception(__('messages.order_not_found'));
         }
 
-        $order->status = 'cancelled';
+        $order->status = Order::STATUS_CANCELED;
         $order->save();
     }
 
