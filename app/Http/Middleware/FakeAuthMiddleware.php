@@ -23,7 +23,6 @@ class FakeAuthMiddleware
             return response()->json(['error' => 'Invalid user ID'], 401);
         }
 
-        // Bind user to request
         $request->setUserResolver(function () use ($user) {
             return $user;
         });

@@ -12,9 +12,11 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 class StoreOrderTest extends TestCase
 {
     use RefreshDatabase;
+
     public function test_user_can_store_buy_order_when_sufficient_balance()
     {
         $user = $this->createUserWithSufficientBalance(5, 200_000);
+
         $payload = $this->validBuyPayload(5, 200_000);
 
         $response = $this->postBuyOrder($payload, $user);
@@ -27,6 +29,7 @@ class StoreOrderTest extends TestCase
     public function test_user_cannot_store_buy_order_with_insufficient_balance()
     {
         $user = $this->createUserWithInsufficientBalance(5, 200_000);
+        
         $payload = $this->invalidBuyPayload(5, 200_000);
 
         $response = $this->postBuyOrder($payload, $user);
