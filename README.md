@@ -1,6 +1,6 @@
 # TLYN – Online Gold Trading Backend
 
-TLYN is a backend project developed for **TLYN**, an innovative company focused on the online trading of **melted gold** (طلای آب‌شده). The system enables users to securely manage their gold transactions, place buy/sell orders, and monitor their wallet balances in real-time.
+TLYN is a backend project developed for **TLYN**, an innovative company focused on the online trading of **melted gold**. The system enables users to securely manage their gold transactions, place buy/sell orders, and monitor their wallet balances in real-time.
 
 ---
 
@@ -15,6 +15,25 @@ TLYN is a backend project developed for **TLYN**, an innovative company focused 
 * **Testing**: PHPUnit, Feature & Unit Tests
 
 ---
+
+## 🤖 CI/CD Configuration
+
+This project includes a CI pipeline defined in the ci.yml file for GitHub Actions. The pipeline automates the following tasks:
+
+1.Environment Setup: Sets up the testing environment, including the required services like MySQL.
+
+2.Dependency Installation: Installs PHP dependencies using Composer.
+
+3.Database Setup: Configures the database connection and runs migrations.
+
+4.Caching: Caches Composer dependencies to speed up subsequent builds.
+
+5.Tests: Runs PHPUnit tests to ensure that the application works as expected.
+
+This ensures continuous integration for consistent and reliable builds
+
+---
+
 
 ## 📁 Directory Structure
 
@@ -195,7 +214,7 @@ TLYN is a backend project developed for **TLYN**, an innovative company focused 
 ### Installation
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/amirmahdi-for-tlyn.git
+git clone git@github.com:AmirMahdi-for/tlyn.git
 cd amirmahdi-for-tlyn
 cp .env.example .env
 composer install
@@ -236,7 +255,6 @@ Runs:
 * `php artisan serve`
 * `php artisan queue:listen`
 * `php artisan pail`
-* `npm run dev`
 
 ---
 
@@ -277,7 +295,3 @@ Includes Dockerfile and NGINX config. Use `docker-compose up` to boot your app a
 Pull requests are welcome. For major changes, please open an issue first.
 
 ---
-
-## 📝 License
-
-[MIT](https://choosealicense.com/licenses/mit/)
