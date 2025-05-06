@@ -208,7 +208,6 @@ This ensures continuous integration for consistent and reliable builds
 * Docker & Docker Compose
 * PHP 8.2+
 * Composer
-* Node.js & npm
 
 ### Installation
 
@@ -217,7 +216,6 @@ git clone git@github.com:AmirMahdi-for/tlyn.git
 cd amirmahdi-for-tlyn
 cp .env.example .env
 composer install
-npm install
 php artisan key:generate
 docker-compose up -d --build
 ```
