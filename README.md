@@ -12,8 +12,7 @@ TLYN is a backend project developed for **TLYN**, an innovative company focused 
 * **Queue System**: Laravel Queue
 * **Dockerized**: Yes (via `docker-compose.yml`)
 * **Authentication**: Custom (FakeAuthMiddleware)
-* **Testing**: PHPUnit, Feature & Unit Tests
-
+* **Testing**: Feature
 ---
 
 ## 🤖 CI/CD Configuration
@@ -28,9 +27,9 @@ This project includes a CI pipeline defined in the ci.yml file for GitHub Action
 
 4.Caching: Caches Composer dependencies to speed up subsequent builds.
 
-5.Tests: Runs PHPUnit tests to ensure that the application works as expected.
+5.Tests: Runs tests to ensure that the application works as expected.
 
-This ensures continuous integration for consistent and reliable builds
+This ensures continuous integration for consistent and reliable builds 
 
 ---
 
@@ -232,7 +231,7 @@ docker-compose up -d --build
 * Secure transaction handling
 * Custom user identification (via `X-User-ID` header)
 * Repository-Service pattern
-* Feature & Unit tests
+* Feature
 
 ---
 
