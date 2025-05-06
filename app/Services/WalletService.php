@@ -22,11 +22,11 @@ class WalletService
         if ($type === 'buy') {
             $totalPrice = $amount * $pricePerGram;
             if ($wallet->balance_toman < $totalPrice) {
-                throw new InsufficientBalanceException('Insufficient balance');
+                throw new InsufficientBalanceException(__('messages.insufficient_balance'));
             }
         } else {
             if ($wallet->balance_gold < $amount) {
-                throw new InsufficientBalanceException('Insufficient balance');
+                throw new InsufficientBalanceException(__('messages.insufficient_balance'));
             }
         }
 
@@ -35,29 +35,32 @@ class WalletService
 
     public function updateWallet($data, $userId) 
     {
-        $wallet = $this->walletRepository->getByUserId($userId);
-
-        if ($data['type'] == 'withdraw') {
-            if ($wallet->balance_toman < $data['amount']) {
-                throw new \Exception('موجودی کافی برای برداشت وجود ندارد');
+        
+        DB::transaction(function () use ($data, $userId) {
+            
+            $wallet = $this->walletRepository->getByUserId($userId);
+            
+            if (!$wallet) {
+                $wallet = $this->walletRepository->create([
+                    'user_id' => $userId,
+                    'balance_toman' => 0,
+                ]);
             }
-    
-            $wallet->updateOrCreate(
-                ['user_id' => $userId],
-                [
-                    'balance_toman' => DB::raw("balance_toman - {$data['amount']}") 
-                ]
-            );
-        }
-    
-        if ($data['type'] == 'deposit') {
-            $wallet->updateOrCreate(
-                ['user_id' => $userId], 
-                [
-                    'balance_toman' => DB::raw("balance_toman + {$data['amount']}")
-                ]
-            );
-        }
+
+            if ($data['type'] === 'withdraw') {
+                if ($wallet->balance_toman < $data['amount']) {
+                    throw new \Exception(__('messages.insufficient_balance'));
+                }
+
+                $wallet->balance_toman -= $data['amount'];
+            }
+
+            if ($data['type'] === 'deposit') {
+                $wallet->balance_toman += $data['amount'];
+            }
+
+            $wallet->save();
+        });
     }
 
     public function getWallet($userId) 

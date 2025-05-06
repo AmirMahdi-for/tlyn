@@ -6,9 +6,14 @@ use App\Models\Wallet;
 use App\Repositories\Interfaces\WalletRepositoryInterface;
 class WalletRepository implements WalletRepositoryInterface 
 {
-    public function getByUserId(int $userId): Wallet
+    public function create(array $data)
     {
-        return Wallet::where('user_id', $userId)->firstOrFail();
+        return Wallet::create($data);
+    }
+    
+    public function getByUserId(int $userId): ?Wallet
+    {
+        return Wallet::where('user_id', $userId)->first();
     }
 
     public function updateBalanceToman(int $userId, int $amount): Wallet

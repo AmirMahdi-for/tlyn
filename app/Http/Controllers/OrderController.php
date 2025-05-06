@@ -23,7 +23,10 @@ class OrderController extends Controller
     {
         try {
             $order = $this->orderService->store($request->validated(), $request->user()->id);
-            return response()->json(['data' => new OrderResource($order)], 201);
+            return response()->json([
+                'message' => __('messages.order_created'),
+                'data' => new OrderResource($order)
+            ], 201);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 422);
         }
@@ -32,14 +35,12 @@ class OrderController extends Controller
     public function get($locale, $id, Request $request) 
     {
         $order = $this->orderService->getById($id, $request->user()->id);
-
         return response()->json(['data' => new OrderResource($order)]);
     }
 
     public function list(Request $request) 
     {
         $orders = $this->orderService->getAll($request->user()->id);
-
         return response()->json(new OrderResources($orders), 200);
     }
 
@@ -48,16 +49,17 @@ class OrderController extends Controller
         $order = $this->orderService->getById($id, $request->user()->id);
 
         if (!$order) {
-            return response()->json(['error' => 'Order not found'], 404);
+            return response()->json(['error' => __('messages.order_not_found')], 404);
+        
         }
 
         if ($order->status === 'completed') {
-            return response()->json(['error' => 'Completed orders cannot be cancelled'], 400);
+            return response()->json(['error' => __('messages.order_completed_cannot_cancel')], 400);
         }
 
         $this->orderService->cancelOrder($id, $request->user()->id);
-
-        return response()->json(['message' => 'Order cancelled successfully'], 200);
+        
+        return response()->json(['message' => __('messages.order_cancelled')], 200);
     }
 
 }

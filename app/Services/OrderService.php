@@ -31,9 +31,8 @@ class OrderService
         );
 
         if (!$hasSufficientBalance) {
-            throw new \Exception('Insufficient balance');
+            throw new \Exception(__('messages.insufficient_balance'));
         }
-        
 
         $order = $this->orderRepository->create($data, $userId);
 
@@ -70,7 +69,7 @@ class OrderService
         $order = $this->orderRepository->get($id, $userId);
 
         if (!$order) {
-            throw new \Exception('Order not found');
+            throw new \Exception(__('messages.order_not_found'));
         }
 
         $order->status = 'cancelled';

@@ -19,13 +19,19 @@ class TransactionController extends Controller
     public function get($locale, $id, Request $request) 
     {
         $transaction = $this->transactionRepository->get($id, $request->user()->id);
-        return new TransactionResource($transaction);
+        return response()->json([
+            'message' => __('messages.transaction_retrieved'),
+            'data' => new TransactionResource($transaction),
+        ]);
     }
 
     public function list(Request $request) 
     {
         $filters = [];
         $transactions = $this->transactionRepository->getAll($filters, $request->user()->id);
-        return new TransactionResources($transactions);
+        return response()->json([
+            'message' => __('messages.transaction_retrieved'),
+            'data' => new TransactionResources($transactions),
+        ]);
     }
 }
